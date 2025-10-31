@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Snake Game - Modern</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <!-- Start Screen -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-content">
+            <h1 class="game-title">🐍 SNAKE</h1>
+            <p class="game-subtitle">Choose a game mode</p>
+            
+            <!-- Mode Selection -->
+            <div class="mode-selection">
+                <div class="mode-card" data-mode="classic">
+                    <div class="mode-icon">🌀</div>
+                    <div class="mode-name">Classic</div>
+                    <div class="mode-desc">Wrap around edges</div>
+                    <div class="mode-highscore">Best: <span id="highScoreClassic">0</span></div>
+                </div>
+                
+                <div class="mode-card" data-mode="wall">
+                    <div class="mode-icon">🧱</div>
+                    <div class="mode-name">Wall</div>
+                    <div class="mode-desc">Die on walls</div>
+                    <div class="mode-highscore">Best: <span id="highScoreWall">0</span></div>
+                </div>
+                
+                <div class="mode-card" data-mode="speed">
+                    <div class="mode-icon">⚡</div>
+                    <div class="mode-name">Speed</div>
+                    <div class="mode-desc">Super fast gameplay</div>
+                    <div class="mode-highscore">Best: <span id="highScoreSpeed">0</span></div>
+                </div>
+                
+                <div class="mode-card" data-mode="hard">
+                    <div class="mode-icon">🔥</div>
+                    <div class="mode-name">Hard</div>
+                    <div class="mode-desc">Extreme difficulty</div>
+                    <div class="mode-highscore">Best: <span id="highScoreHard">0</span></div>
+                </div>
+            </div>
+            
+            <div class="back-to-menu" id="backToMenu" style="display: none;">
+                <button class="modern-btn back-btn">← Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div class="game-over-screen" id="gameOverScreen">
+        <div class="game-over-content">
+            <h2>Game Over!</h2>
+            <div class="final-mode" id="finalMode">Mode: Classic</div>
+            <div class="final-score">Score: <span id="finalScore">0</span></div>
+            <div class="final-high-score">High Score: <span id="finalHighScore">0</span></div>
+            <div class="game-over-buttons">
+                <button class="modern-btn restart-btn" id="restartBtn">PLAY AGAIN</button>
+                <button class="modern-btn menu-btn" id="menuBtn">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Game Container -->
+    <div class="game-container" id="gameContainer">
+        <!-- Header -->
+        <div class="game-header">
+            <div class="score-container">
+                <div class="score-label">Score</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="controls-header">
+                <div class="mode-badge" id="modeBadge">Classic</div>
+                <button class="icon-btn" id="pauseBtn" title="Pause">
+                    <span id="pauseIcon">⏸</span>
+                </button>
+            </div>
+            <div class="high-score-container">
+                <div class="score-label">Best</div>
+                <div class="score-value" id="highScore">0</div>
+            </div>
+        </div>
+
+        <!-- Game Board -->
+        <div class="board-wrapper">
+            <div class="board" id="board"></div>
+        </div>
+
+        <!-- Mobile Controls -->
+        <div class="mobile-controls" id="mobileControls">
+            <div class="control-row">
+                <button class="control-btn" id="upBtn" data-direction="up">↑</button>
+            </div>
+            <div class="control-row">
+                <button class="control-btn" id="leftBtn" data-direction="left">←</button>
+                <button class="control-btn" id="downBtn" data-direction="down">↓</button>
+                <button class="control-btn" id="rightBtn" data-direction="right">→</button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <p>Use arrow keys or swipe to control</p>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
