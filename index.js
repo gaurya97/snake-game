@@ -188,19 +188,86 @@ function setupEventListeners() {
     // Keyboard Controls
     window.addEventListener('keydown', handleKeyPress);
     
-    // Mobile Directional Buttons
-    elements.upBtn.addEventListener('click', () => changeDirection(0, -1));
-    elements.downBtn.addEventListener('click', () => changeDirection(0, 1));
-    elements.leftBtn.addEventListener('click', () => changeDirection(-1, 0));
-    elements.rightBtn.addEventListener('click', () => changeDirection(1, 0));
+    // Mobile Directional Buttons - Optimized for instant response
+    elements.upBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        changeDirection(0, -1);
+    });
+    elements.downBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        changeDirection(0, 1);
+    });
+    elements.leftBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        changeDirection(-1, 0);
+    });
+    elements.rightBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        changeDirection(1, 0);
+    });
     
-    // Touch/Swipe Controls
+    // Also support touch events for buttons for better mobile response
+    elements.upBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        changeDirection(0, -1);
+    });
+    elements.downBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        changeDirection(0, 1);
+    });
+    elements.leftBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        changeDirection(-1, 0);
+    });
+    elements.rightBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        changeDirection(1, 0);
+    });
+    
+    // Touch/Swipe Controls - Optimized for instant response
     let touchStartX = 0;
     let touchStartY = 0;
+    let touchStartTime = 0;
     
     elements.board.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+        e.preventDefault();
+    }, { passive: false });
+    
+    elements.board.addEventListener('touchmove', (e) => {
+        if (!touchStartX || !touchStartY) return;
+        
+        const touchCurrentX = e.touches[0].clientX;
+        const touchCurrentY = e.touches[0].clientY;
+        
+        const diffX = touchStartX - touchCurrentX;
+        const diffY = touchStartY - touchCurrentY;
+        const distance = Math.sqrt(diffX * diffX + diffY * diffY);
+        
+        // Lower threshold for faster response (15px instead of 30px)
+        if (distance > 15) {
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // Horizontal swipe
+                if (diffX > 15) {
+                    changeDirection(-1, 0); // Left
+                } else if (diffX < -15) {
+                    changeDirection(1, 0); // Right
+                }
+            } else {
+                // Vertical swipe
+                if (diffY > 15) {
+                    changeDirection(0, -1); // Up
+                } else if (diffY < -15) {
+                    changeDirection(0, 1); // Down
+                }
+            }
+            // Reset after successful swipe detection
+            touchStartX = touchCurrentX;
+            touchStartY = touchCurrentY;
+        }
+        
         e.preventDefault();
     }, { passive: false });
     
@@ -209,33 +276,39 @@ function setupEventListeners() {
         
         const touchEndX = e.changedTouches[0].clientX;
         const touchEndY = e.changedTouches[0].clientY;
+        const timeDiff = Date.now() - touchStartTime;
         
         const diffX = touchStartX - touchEndX;
         const diffY = touchStartY - touchEndY;
+        const distance = Math.sqrt(diffX * diffX + diffY * diffY);
         
-        if (Math.abs(diffX) > Math.abs(diffY)) {
-            // Horizontal swipe
-            if (diffX > 30) {
-                changeDirection(-1, 0); // Left
-            } else if (diffX < -30) {
-                changeDirection(1, 0); // Right
-            }
-        } else {
-            // Vertical swipe
-            if (diffY > 30) {
-                changeDirection(0, -1); // Up
-            } else if (diffY < -30) {
-                changeDirection(0, 1); // Down
+        // For quick taps/swipes, use lower threshold
+        if (distance > 10 || timeDiff < 200) {
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // Horizontal swipe
+                if (diffX > 10) {
+                    changeDirection(-1, 0); // Left
+                } else if (diffX < -10) {
+                    changeDirection(1, 0); // Right
+                }
+            } else {
+                // Vertical swipe
+                if (diffY > 10) {
+                    changeDirection(0, -1); // Up
+                } else if (diffY < -10) {
+                    changeDirection(0, 1); // Down
+                }
             }
         }
         
         touchStartX = 0;
         touchStartY = 0;
+        touchStartTime = 0;
         e.preventDefault();
     }, { passive: false });
 }
 
-// Handle Keyboard Input
+// Handle Keyboard Input - Optimized for instant response
 function handleKeyPress(e) {
     if (!gameState.isRunning || gameState.isPaused) {
         if (e.key === ' ') {
@@ -246,18 +319,26 @@ function handleKeyPress(e) {
     
     switch(e.key) {
         case 'ArrowUp':
+        case 'w':
+        case 'W':
             e.preventDefault();
             changeDirection(0, -1);
             break;
         case 'ArrowDown':
+        case 's':
+        case 'S':
             e.preventDefault();
             changeDirection(0, 1);
             break;
         case 'ArrowLeft':
+        case 'a':
+        case 'A':
             e.preventDefault();
             changeDirection(-1, 0);
             break;
         case 'ArrowRight':
+        case 'd':
+        case 'D':
             e.preventDefault();
             changeDirection(1, 0);
             break;
@@ -281,7 +362,12 @@ function changeDirection(x, y) {
         return;
     }
     
+    // Update input direction immediately for instant response
     gameState.inputDir = { x, y };
+    // Also update direction immediately if game has started
+    if (gameState.direction.x !== 0 || gameState.direction.y !== 0) {
+        gameState.direction = { x, y };
+    }
 }
 
 // Start Game
@@ -334,7 +420,7 @@ function resetGame() {
     render();
 }
 
-// Main Game Loop
+// Main Game Loop - Optimized for responsiveness
 function main(currentTime) {
     if (!gameState.isRunning || gameState.isPaused) {
         if (gameState.isRunning) {
@@ -346,7 +432,8 @@ function main(currentTime) {
     gameState.gameLoop = window.requestAnimationFrame(main);
     
     // Control frame rate based on speed
-    if ((currentTime - gameState.lastPaintTime) / 1000 < 1 / gameState.speed) {
+    // Use requestAnimationFrame timestamp for smoother timing
+    if (currentTime - gameState.lastPaintTime < (1000 / gameState.speed)) {
         return;
     }
     
