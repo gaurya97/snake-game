@@ -2,6 +2,8 @@
 
 A modern, responsive Snake game built with HTML, CSS, and JavaScript. Play classic Snake with multiple game modes, beautiful UI, and smooth gameplay!
 
+🎮 **Play Now:** [https://gaurya97.github.io/snake-game/](https://gaurya97.github.io/snake-game/)
+
 ## 🎮 Features
 
 - **Multiple Game Modes:**
